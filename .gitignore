@@ -1,0 +1,22 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+outputs/raw/*
+outputs/priors/*
+outputs/summaries/*
+outputs/logs/*
+outputs/preprocessed/*
+!outputs/**/.gitkeep
+
+# Local environments, caches and generated experiment artifacts
+.micromamba/
+.cache/
+outputs/
+data/reference/
+.ipynb_checkpoints/
+.DS_Store
+.env
+.env.*
+*.pem
+*.key

@@ -1,0 +1,23 @@
+version: mcq-preprocessing-v1
+
+# A permutation is only valid when moving an option does not change what its
+# text refers to. These exclusions follow the intent of the PriDe reference
+# implementation while keeping every removed row in an audit artifact.
+exclude_relative_position_references: true
+exclude_option_label_combinations: true
+
+# Equal option texts cannot be tracked semantically after a permutation, even
+# though the index mapping itself remains technically well-defined.
+exclude_duplicate_option_texts: true
+
+# Bad source rows are quarantined with a reason instead of aborting the whole
+# dataset. Repeated sample IDs keep their first occurrence and quarantine later
+# occurrences. Exact duplicate questions with different IDs are retained and
+# counted because official benchmarks can intentionally overlap subjects.
+normalization_errors: quarantine
+duplicate_sample_ids: quarantine_later
+exact_duplicate_samples: keep_and_report
+
+# start_index / limit are applied to the accepted rows, not to raw rows. Thus a
+# 20-question pilot contains 20 usable questions whenever the split has enough.
+selection_stage: after_filtering

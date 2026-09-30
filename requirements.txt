@@ -1,0 +1,11 @@
+accelerate>=0.33
+datasets>=2.20,<5
+numpy>=1.26,<3
+pandas>=2.2,<4
+pyarrow>=16,<26
+PyYAML>=6.0,<7
+safetensors>=0.4
+torch>=2.4
+tqdm>=4.66,<5
+transformers>=4.48
+pytest>=8.2,<10

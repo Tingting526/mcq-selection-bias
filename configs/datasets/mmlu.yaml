@@ -1,0 +1,7 @@
+alias: mmlu
+repo: cais/mmlu
+config: all
+revision: main
+default_split: test
+adapter: mmlu
+

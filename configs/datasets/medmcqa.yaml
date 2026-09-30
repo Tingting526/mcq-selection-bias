@@ -1,0 +1,6 @@
+alias: medmcqa
+repo: openlifescienceai/medmcqa
+config: null
+revision: main
+default_split: validation
+adapter: medmcqa

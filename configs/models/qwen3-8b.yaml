@@ -1,0 +1,21 @@
+name: qwen3-8b
+alias: qwen3-8b
+model_repo: Qwen/Qwen3-8B
+model_revision: main  # pin to an exact commit before final thesis runs
+tokenizer_repo: Qwen/Qwen3-8B
+tokenizer_revision: main
+backend: transformers
+model_class: AutoModelForCausalLM
+tokenizer_backend: auto
+use_chat_template: true
+chat_template_kwargs:
+  enable_thinking: false
+trust_remote_code: false
+dtype: auto
+device_map: auto
+reasoning: false
+quantized: false
+approx_params_billions: 8.0
+min_accelerator_memory_gb: 22
+requires_accelerator: true
+option_token_template: "{label}"

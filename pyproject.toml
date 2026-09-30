@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcq-selection-bias"
+version = "0.1.0"
+description = "Reproducible selection-bias and PriDe experiments for four-option MCQA"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "accelerate>=0.33",
+  "datasets>=2.20,<5",
+  "numpy>=1.26,<3",
+  "pandas>=2.2,<4",
+  "pyarrow>=16,<26",
+  "PyYAML>=6.0,<7",
+  "safetensors>=0.4",
+  "torch>=2.4",
+  "tqdm>=4.66,<5",
+  "transformers>=4.48",
+]
+
+[project.optional-dependencies]
+reference = ["sentencepiece>=0.2,<1"]
+dev = ["pytest>=8.2,<10"]
+notebooks = [
+  "matplotlib>=3.8,<4",
+  "ipykernel>=6.29,<8",
+  "jupyterlab>=4.2,<5",
+  "nbclient>=0.10,<1",
+  "nbformat>=5.10,<6",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -m 'not integration'"
+markers = [
+  "integration: real-model tests that download/load the thesis model (needs a GPU; run with -m integration)",
+]

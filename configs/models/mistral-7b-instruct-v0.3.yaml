@@ -1,0 +1,20 @@
+name: mistral-7b-instruct-v0.3
+alias: mistral-7b-instruct-v0.3
+model_repo: mistralai/Mistral-7B-Instruct-v0.3
+model_revision: main  # pin to an exact commit before final thesis runs
+tokenizer_repo: mistralai/Mistral-7B-Instruct-v0.3
+tokenizer_revision: main
+backend: transformers
+model_class: AutoModelForCausalLM
+tokenizer_backend: auto
+use_chat_template: true
+chat_template_kwargs: {}
+trust_remote_code: false
+dtype: auto
+device_map: auto
+reasoning: false
+quantized: false
+approx_params_billions: 7.0
+min_accelerator_memory_gb: 20
+requires_accelerator: true
+option_token_template: "{label}"

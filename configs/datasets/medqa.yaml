@@ -1,0 +1,7 @@
+alias: medqa
+repo: openlifescienceai/MedQA-USMLE-4-options-hf
+config: null
+revision: main
+default_split: test
+adapter: medqa
+

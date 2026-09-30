@@ -1,0 +1,20 @@
+name: glm-4-9b-chat-hf
+alias: glm-4-9b-chat-hf
+model_repo: zai-org/glm-4-9b-chat-hf
+model_revision: main  # pin to an exact commit before final thesis runs
+tokenizer_repo: zai-org/glm-4-9b-chat-hf
+tokenizer_revision: main
+backend: transformers
+model_class: AutoModelForCausalLM
+tokenizer_backend: auto
+use_chat_template: true
+chat_template_kwargs: {}
+trust_remote_code: false
+dtype: auto
+device_map: auto
+reasoning: false
+quantized: false
+approx_params_billions: 9.0
+min_accelerator_memory_gb: 24
+requires_accelerator: true
+option_token_template: "{label}"
