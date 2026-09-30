@@ -1,4 +1,4 @@
-"""Check access and submit the five-model full MedQA experiment on LRZ."""
+"""Check access and submit selected models for full MedQA on LRZ."""
 import argparse
 import json
 from pathlib import Path
@@ -49,14 +49,16 @@ def check_access(model):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--submit', action='store_true')
+    parser.add_argument('--models', nargs='+', choices=MODELS, default=MODELS)
     parser.add_argument('--directory', type=Path,
                         default=PROJECT_ROOT / 'outputs/campaigns/medqa-five-models-20260930')
     parser.add_argument('--partition', default='lrz-dgx-a100-80x8')
     args = parser.parse_args()
+    models = list(dict.fromkeys(args.models))
     artifact = select_artifact()
     print(f'MedQA artifact: {artifact}', flush=True)
     failed = []
-    for model in MODELS:
+    for model in models:
         try:
             check_access(model)
             print(f'Access OK: {model}', flush=True)
@@ -76,11 +78,11 @@ def main():
     if path.exists():
         state = json.loads(path.read_text())
         expected = [dict(model=model, dataset='medqa', scorer='real', limit=None,
-                         batch_size=1, preprocessed=str(artifact.resolve())) for model in MODELS]
+                         batch_size=1, preprocessed=str(artifact.resolve())) for model in models]
         if [entry['config'] for entry in state['entries']] != expected:
             raise ValueError('Existing campaign differs; use another directory')
     else:
-        state = plan(directory, MODELS, ['medqa'], batch_size=1, preprocessed=artifact)
+        state = plan(directory, models, ['medqa'], batch_size=1, preprocessed=artifact)
     submit(directory, state, args.partition)
 
 

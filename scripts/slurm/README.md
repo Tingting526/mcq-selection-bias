@@ -205,3 +205,14 @@ python scripts/run_campaign.py collect \
 This creates the campaign's `comparison.csv`. GPU compatibility for the four
 additional models must still be verified in their actual LRZ runs; passing the
 access check does not guarantee inference compatibility.
+
+For the initial three accessible models, use a separate campaign directory:
+
+```bash
+python scripts/start_medqa_campaign.py --submit \
+  --directory outputs/campaigns/medqa-three-models-20260930 \
+  --models qwen3-8b mistral-7b-instruct-v0.3 glm-4-9b-chat-hf
+```
+
+Only the selected models are checked and submitted. The same directory prevents
+accidental duplicate submission of those jobs.

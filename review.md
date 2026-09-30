@@ -32,3 +32,35 @@ Die eingefrorenen Daten, zyklischen Prompts, Ausschlüsse und Manifeste befinden
 ## Reproduzierbarkeit
 
 Die Installation und erneute Ausführung der Vorverarbeitung ist in `RUN_PREPROCESSING.md` beschrieben. Konfigurationen liegen unter `configs/`, die Implementierung unter `src/` und die zugehörigen Tests unter `tests/`.
+
+## Targeted medical-pipeline review (2026-09-30)
+
+Verified first-token extraction at the final unmasked prompt position and softmax
+restricted to the four option-token logits. These are conditional probabilities
+among A–D, not their unnormalized full-vocabulary probabilities. Model evaluation
+mode is enabled; inference does not sample generated answers.
+
+Reviewed cyclic content/display mappings, updated gold labels, sample-prior
+geometric means, averaging across estimation samples, and division by the global
+prior followed by normalization. Numerical parity tests against the pinned Zheng
+reference pass for positive probabilities; epsilon handling differs near zero.
+The prior-estimation computation does not use gold answers. Gold answers are used
+for metrics. Estimation questions receive cyclic debiasing and remaining questions
+receive the global-prior correction, with separate D_e/D_r summary fields.
+
+Validation: 78 tests passed, one integration test deselected. In addition, real
+pinned Qwen3, Mistral-v0.3 and GLM-4 tokenizers passed contextual A–D continuation
+checks on three MedQA questions in four cyclic orders each (12 prompts per model).
+These tokenizer checks do not validate GPU inference for Mistral or GLM. The user
+provided a successful corrected 100-question Qwen3 LRZ run with explicit baseline
+reuse; full-dataset results are still pending.
+
+Scope: the medical pipeline uses four cyclic permutations, current chat templates,
+one valid whitespace representation per option token, and one calibration seed.
+It is not an exact replication of the full original experimental protocol. Fixed
+A–D labels and option rotation alone do not isolate positional from token-label
+bias. The separate original-protocol runner provides additional controls; their
+existence is not evidence that the medical campaign has run them. Accuracy and
+RStd are stored on a 0–1 scale; multiply by 100 when comparing to original paper
+percentage-scale tables. RStd is the population standard deviation of per-label
+recalls, not the standard deviation of predicted-label frequencies.

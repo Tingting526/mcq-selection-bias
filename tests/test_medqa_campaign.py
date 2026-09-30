@@ -38,3 +38,17 @@ def test_failed_model_access_does_not_submit(tmp_path, monkeypatch):
     monkeypatch.setattr(start_medqa_campaign, 'submit', lambda *a: pytest.fail('Submitted with failed access'))
     with pytest.raises(SystemExit, match='Nothing submitted'):
         start_medqa_campaign.main()
+
+
+def test_selected_models_only_checked_and_submitted(tmp_path, monkeypatch):
+    selected = ['qwen3-8b', 'mistral-7b-instruct-v0.3', 'glm-4-9b-chat-hf']
+    monkeypatch.setattr(sys, 'argv', ['start_medqa_campaign.py', '--submit', '--directory',
+                                   str(tmp_path/'campaign'), '--models', *selected])
+    monkeypatch.setattr(start_medqa_campaign, 'select_artifact', lambda: tmp_path/'artifact')
+    checked, submitted = [], []
+    monkeypatch.setattr(start_medqa_campaign, 'check_access', checked.append)
+    monkeypatch.setattr(start_medqa_campaign, 'submit', lambda directory,state,partition: submitted.extend(state['entries']))
+    start_medqa_campaign.main()
+    assert checked == selected
+    assert [e['config']['model'] for e in submitted] == selected
+    assert all(e['config']['limit'] is None for e in submitted)
