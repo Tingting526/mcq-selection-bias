@@ -20,7 +20,7 @@ from src import OPTION_LABELS
 from src.data.registry import load_samples_with_metadata
 from src.evaluation.baseline import iter_baseline_batches
 from src.evaluation.pride_eval import apply_prior_to_records, split_estimation_and_remaining
-from src.metrics.selection_bias import selection_bias_metrics
+from src.metrics.selection_bias import selection_bias_metrics, paired_group_metrics
 from src.utils.config import named_config, load_yaml
 from src.evaluation.saved_baseline import reuse_saved_baseline
 from src.utils.io import RunStore, read_json, unique_path
@@ -197,6 +197,7 @@ def main() -> None:
         "delta_accuracy": pride_metrics["accuracy"] - baseline_metrics["accuracy"],
         "delta_rstd": pride_metrics["rstd"] - baseline_metrics["rstd"],
     }
+    metrics.update(paired_group_metrics(baseline_rows, pride_rows))
     _, summary_path = save_summary(store, metrics, f"pride_{args.model}_{args.dataset}")
     print(f"PriDe results: {output_path}")
     print(f"Summary: {summary_path}")

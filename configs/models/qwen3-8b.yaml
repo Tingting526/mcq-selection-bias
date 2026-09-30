@@ -1,9 +1,9 @@
 name: qwen3-8b
 alias: qwen3-8b
 model_repo: Qwen/Qwen3-8B
-model_revision: main  # pin to an exact commit before final thesis runs
+model_revision: b968826d9c46dd6066d109eabc6255188de91218
 tokenizer_repo: Qwen/Qwen3-8B
-tokenizer_revision: main
+tokenizer_revision: b968826d9c46dd6066d109eabc6255188de91218
 backend: transformers
 model_class: AutoModelForCausalLM
 tokenizer_backend: auto

@@ -73,3 +73,24 @@ def permutation_accuracy_metrics(
     )
     return result
 
+
+
+def paired_group_metrics(baseline_rows, pride_rows):
+    """Report estimation and remaining questions separately, paired by ID."""
+    baseline = {str(row['sample_id']): row for row in baseline_rows}
+    target_ids = [str(row['sample_id']) for row in pride_rows]
+    if (len(baseline) != len(baseline_rows) or len(set(target_ids)) != len(target_ids)
+            or set(baseline) != set(target_ids)):
+        raise ValueError('Paired group metrics require identical unique sample IDs')
+    if any(row.get('sample_group') not in ('D_e', 'D_r') for row in pride_rows):
+        raise ValueError('Missing or invalid PriDe sample group')
+    result = {}
+    for group in ('D_e', 'D_r'):
+        corrected = [row for row in pride_rows if row['sample_group'] == group]
+        original = [baseline[str(row['sample_id'])] for row in corrected]
+        before = selection_bias_metrics(original)
+        after = selection_bias_metrics(corrected)
+        for name, values in [('baseline', before), ('pride', after)]:
+            result.update({f'{group}_{name}_{key}': value for key, value in values.items()})
+        result[f'{group}_delta_accuracy'] = after['accuracy'] - before['accuracy']
+    return result

@@ -16,18 +16,20 @@ from src.utils.config import named_config
 from src.utils.io import write_json
 
 
-def plan(directory, models, datasets, limit=None, batch_size=1):
+def plan(directory, models, datasets, limit=None, batch_size=1, preprocessed=None):
     if limit is not None and limit < 1:
         raise ValueError('limit must be positive')
     if batch_size < 1:
         raise ValueError('batch size must be positive')
     directory = Path(directory).resolve()
+    if preprocessed is not None and len(set(datasets)) != 1:
+        raise ValueError("Explicit preprocessed artifact requires one dataset")
     entries = []
     for model in dict.fromkeys(models):
         named_config('models', model)  # Fail before creating a partial plan.
         for dataset in dict.fromkeys(datasets):
             config = dict(model=model, dataset=dataset, scorer='real', limit=limit,
-                          batch_size=batch_size, preprocessed=str(artifact_for(dataset).resolve()))
+                          batch_size=batch_size, preprocessed=str(Path(preprocessed or artifact_for(dataset)).resolve()))
             entries.append(dict(config=config, pipeline=str(directory / f'{model}_{dataset}_{uuid.uuid4().hex[:12]}'),
                                 job_id=None))
     directory.mkdir(parents=True, exist_ok=False)
@@ -101,11 +103,12 @@ def main():
     p.add_argument('--limit', type=int)
     p.add_argument('--batch-size', type=int, default=1)
     p.add_argument('--partition')
+    p.add_argument('--preprocessed', type=Path)
     args = p.parse_args()
     directory = args.directory.resolve()
     if args.action == 'plan':
         models = args.models or named_config('experiments', 'thesis')['core_models']
-        state = plan(directory, models, args.datasets, args.limit, args.batch_size)
+        state = plan(directory, models, args.datasets, args.limit, args.batch_size, args.preprocessed)
         print(f"Prepared {len(state['entries'])} jobs; limit={args.limit or 'FULL'}. Nothing submitted.")
     else:
         state = json.loads((directory / 'campaign.json').read_text())

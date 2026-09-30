@@ -162,3 +162,46 @@ Keine aktuellen Chat-Templates: der originale rohe CLM-Prompt wird bewusst erhal
 
 PriDe ist nicht Teil dieses separaten Auftrags. Fünf-Optionen-Scoring und die fünf
 CSQA-Permutationen sind hier unterstützt, aber noch nicht in der PriDe-Pipeline.
+
+## Full MedQA comparison: five models
+
+`start_medqa_campaign.py` submits one independent full MedQA pipeline for each of
+Llama-3.1-8B-Instruct, Mistral-7B-Instruct-v0.3, Qwen3-8B, Gemma-2-9B-IT and
+GLM-4-9B-Chat-HF. Model revisions are fixed in `configs/models`. It selects a
+complete 1,273-question MedQA artifact matching the configured prompt version,
+checks access to all model repositories, and only then submits jobs. Small
+configuration files are downloaded during the access check; model weights are
+loaded by the GPU jobs. Llama and Gemma require approved Hugging Face access and
+an authenticated account in the LRZ environment.
+
+After uploading code, configurations and the matching MedQA artifact, run on LRZ:
+
+```bash
+export MCQ_CONDA_ENV=mcq-analysis
+source scripts/slurm/environment.sh
+python scripts/start_medqa_campaign.py --submit
+```
+
+The default campaign directory is `outputs/campaigns/medqa-five-models-20260930`.
+Repeating this command skips already submitted jobs. It does not resubmit failed
+jobs. A different configuration requires a new `--directory`.
+
+Each model uses all 1,273 questions, batch size 1, seed 42 and alpha 0.05:
+63 estimation questions (D_e) and 1,210 remaining questions (D_r). All models
+use the same question population and estimation IDs, but estimate their own
+prior. The saved first-token baseline is reused for the paired PriDe comparison.
+The pipeline includes four cyclic option arrangements, not all 24 permutations.
+Summary columns separately report D_e and D_r accuracy, recall, RStd and predicted
+answer counts before/after correction. D_e uses cyclic debiasing; D_r uses the
+global prior. This is a single-seed experiment, not a multi-seed robustness study.
+
+Once every job has completed:
+
+```bash
+python scripts/run_campaign.py collect \
+  --directory outputs/campaigns/medqa-five-models-20260930
+```
+
+This creates the campaign's `comparison.csv`. GPU compatibility for the four
+additional models must still be verified in their actual LRZ runs; passing the
+access check does not guarantee inference compatibility.

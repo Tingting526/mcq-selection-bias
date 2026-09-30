@@ -1,9 +1,9 @@
 name: mistral-7b-instruct-v0.3
 alias: mistral-7b-instruct-v0.3
 model_repo: mistralai/Mistral-7B-Instruct-v0.3
-model_revision: main  # pin to an exact commit before final thesis runs
+model_revision: c170c708c41dac9275d15a8fff4eca08d52bab71
 tokenizer_repo: mistralai/Mistral-7B-Instruct-v0.3
-tokenizer_revision: main
+tokenizer_revision: c170c708c41dac9275d15a8fff4eca08d52bab71
 backend: transformers
 model_class: AutoModelForCausalLM
 tokenizer_backend: auto

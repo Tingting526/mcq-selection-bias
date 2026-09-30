@@ -1,9 +1,9 @@
 name: glm-4-9b-chat-hf
 alias: glm-4-9b-chat-hf
 model_repo: zai-org/glm-4-9b-chat-hf
-model_revision: main  # pin to an exact commit before final thesis runs
+model_revision: 8599336fc6c125203efb2360bfaf4c80eef1d1bf
 tokenizer_repo: zai-org/glm-4-9b-chat-hf
-tokenizer_revision: main
+tokenizer_revision: 8599336fc6c125203efb2360bfaf4c80eef1d1bf
 backend: transformers
 model_class: AutoModelForCausalLM
 tokenizer_backend: auto
